@@ -14,7 +14,6 @@ def plotCovid(rows, state='', county='', countiesPath=''):
     startDate = dates[0]
     endDate = dates[1]
     months = [i for i in dates if i.split('/')[1] == '01']
-    print(months)
 
 
     countyTitle = county.title()
@@ -66,10 +65,10 @@ def plotCovid(rows, state='', county='', countiesPath=''):
     #ax4.axis('off')
 
 
-    fatalityRates = [100 * deaths[i] / cases[i] for i in range(len(cases))]
+    fatalityRates = [100 * (deaths[i] / cases[i]) for i in range(len(cases))]
     ax4.plot(fatalityRates, 'g.-')
 
-    ax4.text(.98, 0.05, f'Fatality rate in percent\nCurrent: {round(fatalityRates[-1], 1)}',
+    ax4.text(.98, 0.05, f'Fatality rate\nCurrent: {round(fatalityRates[-1], 1)} %',
         verticalalignment='bottom', horizontalalignment='right',
         transform=ax4.transAxes,
         color='black', fontsize=8, style='italic')
