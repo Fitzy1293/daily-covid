@@ -14,6 +14,12 @@ Now that you have an updated list of us-counties.csv, you don't need to run the 
 
 For example you could now do this.
 
-`python3 nytimes_covid.py -state ny county "orange"`
+`python3 nytimes_covid.py -state ny -county "orange"`
+
 # Example
-!(example)[example.png]
+
+![image](example.png)
+
+![image](plots_los_angeles_california.png)
+
+![image](plots_orange_new_york.png)
