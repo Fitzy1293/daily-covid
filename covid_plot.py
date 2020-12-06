@@ -22,7 +22,7 @@ def plotCovid(rows, state='', county='', countiesPath=''):
            title=genericTitle)
 
     ax2 = fig.add_subplot(gs[1, 1]) # row 0, col 1
-    ax2.plot(deaths, 'm.')
+    ax2.plot(deaths, 'm.-')
     ax2.set(xlabel=f'Days since {startDate}', ylabel='Total deaths',
            title=genericTitle)
     ax2.plot([0,1])
