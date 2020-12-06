@@ -10,7 +10,7 @@ Plots daily deltas given a county and a state.
 
 `cd daily-covid`
 
-`python3 nytimes_covid.py -state CA county "Los Angeles" -getdata`
+`python3 nytimes_covid.py -state CA -county "Los Angeles" -getdata`
 
 Now that you have an updated list of us-counties.csv, you don't need to run the `-getdata` argument.
 
