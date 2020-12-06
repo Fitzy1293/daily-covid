@@ -29,3 +29,4 @@ For example you could now do this.
 ![image](plots_new_york_city_new_york.png)
 
 ![image](plots_cook_illinois.png)
+![image](plots_suffolk_massachusetts.png)
