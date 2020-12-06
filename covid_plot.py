@@ -12,7 +12,7 @@ def plotCovid(rows, state='', county='', countiesPath=''):
     dates = [dateFormat(i[0]) for i in rows[1:]]
 
     startDate = dates[0]
-    endDate = dates[1]
+    endDate = dates[-1]
     months = [i for i in dates if i.split('/')[1] == '01']
 
 
