@@ -26,4 +26,4 @@ For example you could now do this.
 
 ![image](plots_los_angeles_california.png)
 
-![image](plots_ny_york_city_new_york.png)
+![image](plots_new_york_city_new_york.png)
