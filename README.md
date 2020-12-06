@@ -4,6 +4,8 @@ Use the New York Time's covid data to get up to date county info.
 
 Plots daily deltas given a county and a state.
 
+`pip3 install matplotlib numpy`
+
 `git clone https://github.com/Fitzy1293/daily-covid.git`
 
 `cd daily-covid`
