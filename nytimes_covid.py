@@ -7,6 +7,7 @@ import argparse
 from datetime import date
 import covid_plot
 import subprocess
+import requests
 
 
 states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
@@ -80,13 +81,15 @@ def main(**kwargs):
 
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
     head = ['Date', 'Cases (Total Δ=Daily Change)', 'Deaths (Total Δ=Daily Change)']
-    csvCreate([head] + outputTable, csvPath)
+    csvData = [head] + outputTable
+    csvCreate(csvData, csvPath)
     print(csvPath)
     print(plotsPath)
     print()
-    print('days: ', len(rowsCols))
-    print('recent:', '\t'.join(rowsCols[-1]))
-    print('first: ', '\t'.join(rowsCols[0]))
+    print('days:  ', len(rowsCols))
+    print()
+    print('\t'.join(rowsCols[-1]))
+    print('\t'.join(rowsCols[0]))
 
 
     covid_plot.plotCovid(rowsCols, state=state, county=county, countiesPath=plotsPath)
@@ -123,12 +126,17 @@ if __name__ == '__main__':
 
 
     if args.getdata: # Used when actually updating, shell online is easier
-
-        print('Curling NY times COVID-19 CSV\n')
-        print(f"curl '{endpoint}' > us-counties.csv")
-        os.system(f"curl '{endpoint}' > us-counties.csv")
+        # Got rid of curl, requests module now
+        print('Downloading NY times COVID-19 CSV\n')
+        r = requests.get(endpoint)
+        print('http status:', r.status_code)
+        endpointTxt = r.text # Writing to disk and keeping in memory
+        with open('us-counties.csv', 'w+') as f:
+            f.write(r.text)
 
     if args.state and args.county:
+        if not args.getdata:
+            endpointTxt = open('us-counties.csv', 'r').read()
         #-state "NY" -county "Orange"
         state = states[dictArgs['state'].upper()].lower()
         county = dictArgs['county'].lower()
@@ -136,7 +144,7 @@ if __name__ == '__main__':
         countyStateStr = f'{state},{county}'
         fname = '_'.join(countyStateStr.lower().split(',')) + '.csv'
 
-        stateCountyData = [i for i in open('us-counties.csv', 'r').read().splitlines() if query.lower() in i.lower()]
+        stateCountyData = [i for i in endpointTxt.splitlines() if query.lower() in i.lower()]
 
 
 
