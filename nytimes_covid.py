@@ -93,6 +93,7 @@ def main(**kwargs):
 
 
     covid_plot.plotCovid(rowsCols, state=state, county=county, countiesPath=plotsPath)
+
     if args.covidupdate:
         updateReadme(dateFormat(rowsCols[-1][0]))
 
