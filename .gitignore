@@ -1,2 +1,4 @@
 *.log
 counties/
+counties
+dist/
