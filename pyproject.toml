@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dailycovid"
-version = "0.0.4"
+version = "0.0.7"
 description = "U.S.A daily covid information"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"

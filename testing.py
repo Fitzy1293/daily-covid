@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import argparse
 from datetime import date
-from .covid_plot import *
+from covid_plot import *
 import subprocess
 import requests
 
@@ -171,3 +171,4 @@ def main():
                      countiesPath=os.path.join(os.getcwd(), 'counties', ''))
             except ZeroDivisionError:
                 pass
+main()

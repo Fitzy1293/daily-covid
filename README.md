@@ -5,13 +5,9 @@
 
 # Usage
 
-`python3 nytimes_covid.py -state CA -county "Los Angeles" -getdata`
+`dailycovid -state ny`
 
-Now that you have an updated list of us-counties.csv, you don't need to run the -getdata argument.
-
-For example you could now do this.
-
-`python3 nytimes_covid.py -state ny -county "orange"`
+`daily covid -state CA -county "Los Angeles" -getdata`
 
 # Examples of plots
 
