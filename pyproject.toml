@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "dailycovid"
-version = "0.0.7"
+version = "0.0.9"
 description = "U.S.A daily covid information"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"
+readme = "README.md"
 
 
 include = [

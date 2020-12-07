@@ -152,7 +152,7 @@ def main():
 
         if not args.county:
             counties = set([i.split(',')[1].lower() for i in endpointTxt.splitlines() if state.lower() == i.lower().split(',')[2]])
-            counties = sorted(counties - set("unkown"))
+            counties = sorted(counties - {'unknown'})
         else:
             counties = [dictArgs['county'].lower()]
         pprint(counties)
