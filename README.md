@@ -22,11 +22,11 @@ For example you could now do this.
 
 # Example
 
-![image](example.png)
+![image](examples/example.png)
 
-![image](plots_los_angeles_california.png)
+![image](examples/plots_los_angeles_california.png)
 
-![image](plots_new_york_city_new_york.png)
+![image](examples/plots_new_york_city_new_york.png)
 
-![image](plots_cook_illinois.png)
-![image](plots_suffolk_massachusetts.png)
+![image](examples/plots_cook_illinois.png)
+![image](examples/plots_suffolk_massachusetts.png)

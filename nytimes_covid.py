@@ -72,8 +72,11 @@ def main(**kwargs):
     endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     stateReplaceSpace = state.replace(' ', '_')
     countyReplaceSpace = county.replace(' ', '_')
-    csvPath = os.path.join(kwargs['countiesPath'], f'{countyReplaceSpace}_{stateReplaceSpace}.csv')
-    plotsPath = kwargs['countiesPath'] + f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'.lower()
+    csvFname = f'{countyReplaceSpace}_{stateReplaceSpace}.csv'
+    plotsFname = f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'
+
+    csvPath = kwargs['countiesPath'] + csvFname
+    plotsPath = kwargs['countiesPath'] + f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'
 
     #os.remove('temp.csv')
     rowsCols = [i.split(',') for i in kwargs['lines']]
@@ -83,8 +86,10 @@ def main(**kwargs):
     head = ['Date', 'Cases (Total Δ=Daily Change)', 'Deaths (Total Δ=Daily Change)']
     csvData = [head] + outputTable
     csvCreate(csvData, csvPath)
-    print(csvPath)
-    print(plotsPath)
+    print(os.getcwd())
+    print('output dir: counties')
+    print(f'\tcsv: {csvFname}')
+    print(f'\tplot: {plotsFname}')
     print()
     print('days:  ', len(rowsCols))
     print()
@@ -138,7 +143,7 @@ if __name__ == '__main__':
     if args.state and args.county:
         if not args.getdata:
             endpointTxt = open('us-counties.csv', 'r').read()
-        #-state "NY" -county "Orange"
+
         state = states[dictArgs['state'].upper()].lower()
         county = dictArgs['county'].lower()
         query = f',{county},{state},'
@@ -146,8 +151,6 @@ if __name__ == '__main__':
         fname = '_'.join(countyStateStr.lower().split(',')) + '.csv'
 
         stateCountyData = [i for i in endpointTxt.splitlines() if query.lower() in i.lower()]
-
-
 
         main(lines=stateCountyData,
              state=state,
