@@ -24,8 +24,8 @@ states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"Cali
 
 
 def createNewRow(row, previous):
-    cases = f'{row[-2]}: Δ={int(row[-2]) - int(previous[-2])}'
-    deaths = f'{row[-1]}: Δ={int(row[-1]) - int(previous[-1])}'
+    cases = f'{row[-2]}: delta={int(row[-2]) - int(previous[-2])}'
+    deaths = f'{row[-1]}: delta={int(row[-1]) - int(previous[-1])}'
     return [dateFormat(row[0]), cases, deaths, row[1:]]
 
 def shortenTable(rows):
@@ -41,7 +41,7 @@ def shortenTable(rows):
     return returnRows
 
 def csvCreate(rows, fname):
-    with open(fname, 'w+') as f:
+    with open(fname, 'w+', encoding='utf-8') as f:
         for i in rows:
             f.write(','.join(i))
             f.write('\n')

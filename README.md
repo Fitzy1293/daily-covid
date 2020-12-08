@@ -15,8 +15,8 @@ Or by county.
 
 # Examples of plots
 
-![image](examples/plots_los_angeles_california.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_los_angeles_california.png)
 
-![image](examples/plots_suffolk_massachusetts.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_suffolk_massachusetts.png)
 
-![image](examples/plots_new_york_city_new_york.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_new_york_city_new_york.png)
