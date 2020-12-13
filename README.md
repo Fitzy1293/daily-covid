@@ -13,6 +13,10 @@ Or by county.
 
 `dailycovid -state CA -county "Los Angeles"`
 
+Or if you need to update the data you have for a new day. 
+
+`dailycovid -getdata`
+
 # Examples of plots
 
 ![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_los_angeles_california.png)
