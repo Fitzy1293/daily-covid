@@ -11,7 +11,11 @@ To get the plots for every county in a state.
 
 Or by county.
 
-`daily covid -state CA -county "Los Angeles"`
+`dailycovid -state CA -county "Los Angeles"`
+
+Or if you need to update the data you have for a new day. 
+
+`dailycovid -getdata`
 
 # Examples of plots
 
