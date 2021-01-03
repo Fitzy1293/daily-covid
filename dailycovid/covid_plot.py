@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-import os
-import datetime
 
 #months = [i for i in dates if i.split('/')[1] == '01']
 size = 9

@@ -60,11 +60,10 @@ def shortenTable(rows):
     fixedFirstDay = [dateFormat(previous[0]), f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
     returnRows = [fixedFirstDay]
 
-    for row in rows:
+    for row in rows[1:]:
         newRow = createNewRow(row, previous)
         returnRows.append(newRow[0])
         previous = newRow[-1]
-
     return returnRows
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -98,7 +97,7 @@ def run(**kwargs):
     csvPath = countiesDir + csvFname
     plotsPath = countiesDir + plotsFname
 
-    rowsCols = [i.split(',') for i in kwargs['lines']][:-1]
+    rowsCols = [i.split(',') for i in kwargs['lines']]
 
 
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
