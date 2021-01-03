@@ -36,14 +36,11 @@ if len(sys.argv) == 1:
     parser.print_help()
     sys.exit()
 
-if args.getdata: # Used when actually updating, shell online is easier
-    nytimesUpdate(endpoint=endpoint)
-
 endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 boxCarSep = '─' * 100
 cwd = os.getcwd()
 countiesDir = os.path.join(cwd, 'counties', '')
-head = ['Date', 'Cases (Total: delta=Daily Change)', 'Deaths: (Total: delta=Daily Change)']
+head = ['Date', 'Cases-Total: delta=Daily-Change', 'Deaths-Total: delta=Daily-Change)']
 headStr = ','.join(head)
 
 print() #space
@@ -63,7 +60,7 @@ def shortenTable(rows):
     fixedFirstDay = [dateFormat(previous[0]), f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
     returnRows = [fixedFirstDay]
 
-    for row in rows[1:]:
+    for row in rows:
         newRow = createNewRow(row, previous)
         returnRows.append(newRow[0])
         previous = newRow[-1]
@@ -105,8 +102,7 @@ def run(**kwargs):
 
 
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
-    csvData = [head] + outputTable
-    csvCreate(csvData, csvPath)
+    csvCreate([head] + outputTable, csvPath)
 
 
     print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
@@ -121,6 +117,8 @@ def run(**kwargs):
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def main():
+    if args.getdata: # Used when actually updating, shell online is easier
+        nytimesUpdate(endpoint=endpoint)
 
     dictArgs = vars(args)
     if args.stateCounty:
@@ -135,7 +133,7 @@ def main():
         with open('us-counties.csv', 'r') as f:
             endpointTxt = f.read().splitlines()
 
-        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -getdata as an argument if you need to update the us-counties.csv cache.\n')
+        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
 
         print(f'CSV structure: {headStr}\n')
 

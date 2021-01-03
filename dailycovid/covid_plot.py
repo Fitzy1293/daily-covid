@@ -79,5 +79,5 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 
     fig.set_size_inches(size, size)
     plt.subplots_adjust(hspace=.3, wspace=.75)
-    plt.savefig(plotsPath, dpi = 200)
+    plt.savefig(plotsPath, dpi = 250)
     plt.close() # Don't forget or it memory leaks.

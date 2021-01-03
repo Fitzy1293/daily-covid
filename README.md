@@ -5,22 +5,33 @@
 
 # Usage
 
-To get the plots for every county in a state.
 
-`dailycovid -state ny`
+## Simplest
 
-Or by county.
+`dailycovid -s statecode`
 
-`dailycovid -state CA -county "Los Angeles"`
+## Specific Counties in a State
 
-Or if you need to update the data you have for a new day. 
+Three ways to do the same thing.
 
-`dailycovid -getdata`
+`dailycovid -sc "California-Los Angeles"`
+
+`dailycovid -s CA -c "Los Angeles"`
+
+`dailycovid --state CA --county "Los Angeles"`
+
+## Updating Data
+
+On the first run it will download a csv file containing the most recent data.
+
+
+Use `dailycovid -g` to update the cache.
+
 
 # Examples of plots
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_los_angeles_california.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_los-angeles_california.png)
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_suffolk_massachusetts.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_suffolk_massachusetts.png)   
 
 ![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_new_york_city_new_york.png)
