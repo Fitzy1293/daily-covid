@@ -34,4 +34,4 @@ Use `dailycovid -g` to update the cache.
 
 ![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_suffolk_massachusetts.png)   
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_new-york-city_new_york.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_new-york-city_new-york.png)
