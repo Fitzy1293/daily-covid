@@ -1,0 +1,3 @@
+import dailycovid
+
+dailycovid.main()

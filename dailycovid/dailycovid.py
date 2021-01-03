@@ -21,153 +21,147 @@ states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"Cali
     "VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia",
     "WI":"Wisconsin","WY":"Wyoming"}
 
+endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
+parser = argparse.ArgumentParser(description='Create plots for up to date COVID-19 daily changes.', formatter_class=argparse.RawTextHelpFormatter)
+
+parser.add_argument('--getdata', '-g', action='store_true', help=f'Download data from New York Times COVID endpoint.\n{endpoint}\n ')
+parser.add_argument('--state', '-s', default=False)
+parser.add_argument('--county', '-c', default=False, help='\n')
+parser.add_argument('-sc', dest='stateCounty', default=False, help='Use state and county syperated by a dash.\ndailycovid -sc \'state-county\'')
+
+args = parser.parse_args()
+
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit()
+
+if args.getdata: # Used when actually updating, shell online is easier
+    nytimesUpdate(endpoint=endpoint)
+
+endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+boxCarSep = '─' * 100
+cwd = os.getcwd()
+countiesDir = os.path.join(cwd, 'counties', '')
+head = ['Date', 'Cases (Total: delta=Daily Change)', 'Deaths: (Total: delta=Daily Change)']
+headStr = ','.join(head)
+
+print() #space
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def createNewRow(row, previous):
     cases = f'{row[-2]}: delta={int(row[-2]) - int(previous[-2])}'
     deaths = f'{row[-1]}: delta={int(row[-1]) - int(previous[-1])}'
-    return [dateFormat(row[0]), cases, deaths, row[1:]]
+    return ([dateFormat(row[0]), cases, deaths], row)
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def shortenTable(rows):
     previous = rows[0]
-    fixedFirstDay = [dateFormat(previous[0]), f'{previous[-2]} Δ={previous[-2]}', f'{previous[-1]} Δ={previous[-1]}']
+    fixedFirstDay = [dateFormat(previous[0]), f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
     returnRows = [fixedFirstDay]
 
     for row in rows[1:]:
         newRow = createNewRow(row, previous)
-        returnRows.append(newRow[0:-1])
+        returnRows.append(newRow[0])
         previous = newRow[-1]
 
     return returnRows
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 def csvCreate(rows, fname):
     with open(fname, 'w+', encoding='utf-8') as f:
         for i in rows:
-            f.write(','.join(i))
-            f.write('\n')
+            f.write(f'{",".join(i)}\n')
 
-def updateReadme(nytDate):
-    os.system('csvtomd All_Berkshire_Data_Provided.csv > markdown_table.md')
-    print(f'Date NYT CSV: {latestDate}')
-    print(f'Updating markdown_table.md and README.md for {latestDate}')
-    os.system('cp README.md previous_README.md')
-    updateReadme(dateFormat(rowsCols[-1][0]))
-    print('README.md is up to date')
-
-    with open('README.md', 'w+') as f:
-        f.write(f'# Berkshire County, Massachusetts COVID-19 data\n\n')
-        f.write(f'**Most Recent Update: {nytDate}**\n\n')
-        f.write(f'This README is programatically updated and pushed from a VPS whenever a new days data is available.\n\n')
-        f.write('[Using the New York Time\'s covid tracker](https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv)\n\n')
-        f.write('`curl https://raw.githubusercontent.com/Fitzy1293/Berkshire-County-Covid/master/nytimes_covid.py`\n\n')
-        f.write('`curl https://raw.githubusercontent.com/Fitzy1293/Berkshire-County-Covid/master/py`\n\n')
-        f.write('`python3 nytimes_covid.py -state massachusetts -county berkshire -getdata`')
-        f.write(f'![plots](COVID_plots.png)\n\n')
-        f.write(f'# COVID daily data\n\n')
-
-        f.write(''.join(open('markdown_table.md')))
-        f.write('\n')
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def nytimesUpdate(endpoint=''):
-    print('Downloading NY times COVID-19 CSV\n')
+    print(f'Downloading NY times COVID-19 CSV - {endpoint}')
     r = requests.get(endpoint)
     print('http status:', r.status_code)
     endpointTxt = r.text # Writing to disk and keeping in memory
     with open('us-counties.csv', 'w+') as f:
         f.write(r.text)
 
-def run(**kwargs):
-    if not os.path.exists(kwargs['countiesPath']):
-        os.mkdir(kwargs['countiesPath'])
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
-    stateReplaceSpace = kwargs['state'].replace(' ', '_')
-    countyReplaceSpace = kwargs['county'].replace(' ', '_')
-    csvFname = f'{countyReplaceSpace}_{stateReplaceSpace}.csv'
+def run(**kwargs):
+    if not os.path.exists(countiesDir):
+        os.mkdir(couniesDirs)
+
+    stateReplaceSpace = kwargs['state'].replace(' ', '-')
+    countyReplaceSpace = kwargs['county'].replace(' ', '-')
+    csvFname = f'data_{countyReplaceSpace}_{stateReplaceSpace}.csv'
     plotsFname = f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'
 
-    csvPath = kwargs['countiesPath'] + csvFname
-    plotsPath = kwargs['countiesPath'] + f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'
+    csvPath = countiesDir + csvFname
+    plotsPath = countiesDir + plotsFname
 
-    rowsCols = [i.split(',') for i in kwargs['lines']]
+    rowsCols = [i.split(',') for i in kwargs['lines']][:-1]
 
 
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
-    head = ['Date', 'Cases (Total Δ=Daily Change)', 'Deaths (Total Δ=Daily Change)']
     csvData = [head] + outputTable
     csvCreate(csvData, csvPath)
-    print(os.getcwd())
-    print('output dir: counties')
-    print(f'\tcsv: {csvFname}')
-    print(f'\tplot: {plotsFname}')
-    print()
-    print('days:  ', len(rowsCols))
-    print()
-    print('\t'.join(rowsCols[-1]))
-    print('\t'.join(rowsCols[0]))
-    print('─' * 100)
 
 
-    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], countiesPath=plotsPath)
+    print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
 
-    #if args.covidupdate:
-    #     updateReadme(dateFormat(rowsCols[-1][0]))
+    print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
+    print(boxCarSep)
+
+
+    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def main():
-    endpoint = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
-    parser = argparse.ArgumentParser(description='Create a tracker for COVID daily changes')
-    parser.add_argument('-getdata',
-                       action='store_true',
-                       help=f'Download data from New York Times COVID endpoint\n{endpoint}')
-    parser.add_argument('-state',
-                       default=False,
-                       help='U.S state')
-    parser.add_argument('-county',
-                       default=False,
-                       help='County')
-    parser.add_argument('-currentdata',
-                       action='store_true',
-                       help='Uses local us-counties.csv instead of downloading')
-    parser.add_argument('-covidupdate',
-                       action='store_true',
-                       help='Update README\nNot ready')
 
-
-    args = parser.parse_args()
     dictArgs = vars(args)
+    if args.stateCounty:
+        stateCountyList = args.stateCounty.split('-')
+        dictArgs['state'] = stateCountyList[0]
+        dictArgs['county'] = stateCountyList[1]
 
-    counties = os.path.join(os.getcwd(),'counties','')
-
-
-    if args.getdata: # Used when actually updating, shell online is easier
-        nytimesUpdate(endpoint=endpoint)
-
-    if args.state:
+    if args.state or args.stateCounty:
         if not os.path.exists('us-counties.csv'):
             nytimesUpdate(endpoint=endpoint)
 
-        endpointTxt = open('us-counties.csv', 'r').read()
+        with open('us-counties.csv', 'r') as f:
+            endpointTxt = f.read().splitlines()
 
-        state = states[dictArgs['state'].upper()].lower()
+        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -getdata as an argument if you need to update the us-counties.csv cache.\n')
 
-        if not args.county:
-            counties = set([i.split(',')[1].lower() for i in endpointTxt.splitlines() if state.lower() == i.lower().split(',')[2]])
+        print(f'CSV structure: {headStr}\n')
+
+        state = states[dictArgs['state'][:2].upper()].lower()
+
+        if not args.county and not args.stateCounty:
+            counties = set([i.split(',')[1].lower() for i in endpointTxt if state.lower() == i.lower().split(',')[2]])
             counties = sorted(counties - {'unknown'})
+            print(*counties, sep='\n')
+
         else:
             counties = [dictArgs['county'].lower()]
-        pprint(counties)
-        print()
 
+        print(f'\n{boxCarSep}')
         for county in counties:
+            print(f'{state} - {county}')
             query = f',{county},{state},'
             countyStateStr = f'{state},{county}'
             fname = '_'.join(countyStateStr.lower().split(',')) + '.csv'
 
-            stateCountyData = [i for i in endpointTxt.splitlines() if query.lower() in i.lower()]
+            stateCountyData = [i for i in endpointTxt if query.lower() in i.lower()]
             try:
                 run(lines=stateCountyData,
                      state=state,
-                     county=county,
-                     countiesPath=os.path.join(os.getcwd(), 'counties', ''))
+                     county=county)
             except ZeroDivisionError:
                 pass
+
+    print(f'Find your files here: {countiesDir}')

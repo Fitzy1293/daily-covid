@@ -1,4 +1,5 @@
 *.log
 counties/
-counties
 dist/
+__pycache__/
+dailycovid/__pycache__/

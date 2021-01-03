@@ -117,8 +117,6 @@ def run(**kwargs):
 
     plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
 
-    #if args.covidupdate:
-    #     updateReadme(dateFormat(rowsCols[-1][0]))
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
