@@ -3,3 +3,4 @@ counties/
 dist/
 __pycache__/
 dailycovid/__pycache__/
+us-counties.csv
