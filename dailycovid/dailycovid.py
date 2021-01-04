@@ -40,10 +40,11 @@ endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-co
 boxCarSep = '─' * 100
 cwd = os.getcwd()
 countiesDir = os.path.join(cwd, 'counties', '')
-head = ['Date', 'Cases-Total: delta=Daily-Change', 'Deaths-Total: delta=Daily-Change)']
+head = ['Date', 'Cases-Total: delta=Daily-Change', 'Deaths-Total: delta=Daily-Change']
 headStr = ','.join(head)
 
 print() #space
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -51,13 +52,13 @@ print() #space
 def createNewRow(row, previous):
     cases = f'{row[-2]}: delta={int(row[-2]) - int(previous[-2])}'
     deaths = f'{row[-1]}: delta={int(row[-1]) - int(previous[-1])}'
-    return ([dateFormat(row[0]), cases, deaths], row)
+    return ([row[0], cases, deaths], row)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def shortenTable(rows):
     previous = rows[0]
-    fixedFirstDay = [dateFormat(previous[0]), f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
+    fixedFirstDay = [previous[0], f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
     returnRows = [fixedFirstDay]
 
     for row in rows[1:]:
@@ -99,18 +100,16 @@ def run(**kwargs):
 
     rowsCols = [i.split(',') for i in kwargs['lines']]
 
-
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
     csvCreate([head] + outputTable, csvPath)
-
 
     print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
 
     print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
+    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
+
     print(boxCarSep)
 
-
-    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,9 +131,7 @@ def main():
         with open('us-counties.csv', 'r') as f:
             endpointTxt = f.read().splitlines()
 
-        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
 
-        print(f'CSV structure: {headStr}\n')
 
         state = states[dictArgs['state'][:2].upper()].lower()
 
@@ -161,4 +158,7 @@ def main():
             except ZeroDivisionError:
                 pass
 
-    print(f'Find your files here: {countiesDir}')
+
+        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
+        print(f'CSV structure: {headStr}\n')
+        print(f'Find your files here: {countiesDir}')
