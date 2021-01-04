@@ -2,12 +2,9 @@
 
 from pprint import pprint
 import os
-from pathlib import Path
 import sys
 import argparse
-from datetime import date
 from .covid_plot import *
-import subprocess
 import requests
 
 
@@ -29,6 +26,7 @@ parser.add_argument('--getdata', '-g', action='store_true', help=f'Download data
 parser.add_argument('--state', '-s', default=False)
 parser.add_argument('--county', '-c', default=False, help='\n')
 parser.add_argument('-sc', dest='stateCounty', default=False, help='Use state and county syperated by a dash.\ndailycovid -sc \'state-county\'')
+parser.add_argument('-csv', dest='stateCounty', default=False, help='Use state and county syperated by a dash.\ndailycovid -sc \'state-county\'')
 
 args = parser.parse_args()
 
@@ -88,7 +86,7 @@ def nytimesUpdate(endpoint=''):
 
 def run(**kwargs):
     if not os.path.exists(countiesDir):
-        os.mkdir(couniesDirs)
+        os.mkdir(countiesDir)
 
     stateReplaceSpace = kwargs['state'].replace(' ', '-')
     countyReplaceSpace = kwargs['county'].replace(' ', '-')
@@ -104,13 +102,10 @@ def run(**kwargs):
     csvCreate([head] + outputTable, csvPath)
 
     print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
-
     print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
-    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
-
     print(boxCarSep)
 
-
+    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -127,11 +122,8 @@ def main():
     if args.state or args.stateCounty:
         if not os.path.exists('us-counties.csv'):
             nytimesUpdate(endpoint=endpoint)
-
         with open('us-counties.csv', 'r') as f:
             endpointTxt = f.read().splitlines()
-
-
 
         state = states[dictArgs['state'][:2].upper()].lower()
 
@@ -148,7 +140,6 @@ def main():
             print(f'{state} - {county}')
             query = f',{county},{state},'
             countyStateStr = f'{state},{county}'
-            fname = '_'.join(countyStateStr.lower().split(',')) + '.csv'
 
             stateCountyData = [i for i in endpointTxt if query.lower() in i.lower()]
             try:

@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 #from pprint import pprint
+from time import time
 
-#months = [i for i in dates if i.split('/')[1] == '01']
-size = 9
+
+size = 7
 dpi = 220
 markersize = 2
 linewidth = 1
@@ -34,7 +35,8 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 
     togetherTitle = f'COVID-19 Tracking\n{county.title()}, {state.title()}\n{startDate} - {endDate}'
 
-    fatalityRates = [100 * (deaths[i]) / float(cases[i]) for i in range(len(cases))]
+    #fatalityRates = [100 * (deaths[i]) / cases[i] for i in range(numOfDays)]
+    fatalityRates = np.divide(deaths, cases) * 100
 
     gs = gridspec.GridSpec(3, 2)  # Create 3x2 sub plots
     fig = plt.figure()
@@ -42,7 +44,7 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 # -----------------------------------------------------------------------------------------------------------------------
 
     casesSubplot = fig.add_subplot(gs[0, 1])  # row 0, col 0
-    casesSubplot.set_title('title', style='italic')
+    casesSubplot.set_title('title')
 
     casesSubplot.plot(ar, cases,
                         'r.-',
@@ -55,7 +57,7 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 # -----------------------------------------------------------------------------------------------------------------------
 
     deathsSubplot = fig.add_subplot(gs[2, 1])  # row 0, col 1
-    deathsSubplot.set_title('title')  # style='italic')
+    deathsSubplot.set_title('title')
     deathsSubplot.plot(ar, deaths,
                         'm.-',
                         markersize=markersize,
@@ -64,6 +66,18 @@ def plotCovid(rows, state='', county='', plotsPath=''):
     deathsSubplot.set(xlabel=f'Days since {startDate}',
                         ylabel='Total deaths',
                         title='$f(x) = deaths(day)$')
+
+    axfatality = fig.add_subplot(gs[1, 1])
+
+    axfatality.plot(ar, fatalityRates,'g.-', linewidth=linewidth, markersize=markersize)
+    axfatality.text(.98, 0.05,
+                        f'Fatality rate\nCurrent: {round(fatalityRates[-1], 1)} %',
+                        verticalalignment='bottom',
+                        horizontalalignment='right',
+                        transform=axfatality.transAxes,
+                        color='black',
+                        fontsize=8,
+                        style='italic')
 
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -90,23 +104,11 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 
 # -----------------------------------------------------------------------------------------------------------------------\
 
-    axfatality = fig.add_subplot(gs[1, 1])
 
-
-
-    axfatality.plot(ar, fatalityRates, 'g.', linewidth=linewidth, markersize=markersize)
-    axfatality.text(.98, 0.05,
-                        f'Fatality rate\nCurrent: {round(fatalityRates[-1], 1)} %',
-                        verticalalignment='bottom',
-                        horizontalalignment='right',
-                        transform=axfatality.transAxes,
-                        color='black',
-                        fontsize=8,
-                        style='italic')
 
 # -----------------------------------------------------------------------------------------------------------------------
 
     fig.set_size_inches(size, size)
-    plt.subplots_adjust(hspace=.3, wspace=.75)
+    plt.subplots_adjust(hspace=.5, wspace=.75)
     plt.savefig(plotsPath, dpi=dpi)
     plt.close()  # Don't forget or it memory leaks.

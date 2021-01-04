@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 la=$"ca-los angeles"
 ny="ny-new york city"
 boston="ma-suffolk"
@@ -6,6 +8,12 @@ green='\e[0;32m'
 cyan='\e[0;36m'
 red='\e[0;31m'
 white='\e[0m'
+
+echo -e "${cyan}Current pypi build:${green}"
+grep "version = " pyproject.toml | head -n 1
+echo -e "${cyan}Enter a new poetry build version${white}"
+read poetryVersion
+sed -e "s/.*version =.*$/version = \"$poetryVersion\"/" pyproject.toml > temp.toml
 
 rm ./counties/*
 
@@ -18,11 +26,6 @@ echo -e "${green}Updated README.md figures${white}"
 git add examples
 git commit -m "Examples update" > /dev/null && git push origin -u master
 
-echo -e "${cyan}Current poetry build:${green}"
-grep "version = " pyproject.toml | head -n 1
-echo -e "${cyan}Enter a new poetry build verion${white}"
-read poetryVersion
-sed -e "s/.*version =.*$/version = \"$poetryVersion\"/" pyproject.toml > temp.toml
 mv temp.toml pyproject.toml
 
 poetry build
