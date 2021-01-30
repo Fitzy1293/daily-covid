@@ -30,8 +30,8 @@ Use `dailycovid -g` to update the cache.
 
 # Examples of plots
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_los-angeles_california.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_LOS-ANGELES_CA.png)
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_suffolk_massachusetts.png)   
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_SUFFOLK_MA.png)   
 
-![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_new-york-city_new-york.png)
+![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_NEW-YORK-CITY_NY.png)
