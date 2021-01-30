@@ -7,18 +7,20 @@ import argparse
 from .covid_plot import *
 import requests
 
+endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
-states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
+states = {
+    "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
     "CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia",
     "HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas",
-    "KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi",
-    "MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey",
-    "NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon",
-    "PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah",
-    "VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia",
-    "WI":"Wisconsin","WY":"Wyoming"}
-
-endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+    "KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
+    "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana",
+    "NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico",
+    "NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma",
+    "OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota",
+    "TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington",
+    "WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"
+}
 
 parser = argparse.ArgumentParser(description='Create plots for up to date COVID-19 daily changes.', formatter_class=argparse.RawTextHelpFormatter)
 
@@ -30,7 +32,7 @@ parser.add_argument('-csv', dest='stateCounty', default=False, help='Use state a
 
 args = parser.parse_args()
 
-if len(sys.argv) == 1:
+if len(sys.argv) == 1: # Print help if using CL tool and there are no args.
     parser.print_help()
     sys.exit()
 
@@ -105,10 +107,6 @@ def run(**kwargs):
 
     print(countyInfoPrintOut)
 
-    #print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
-    #print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
-    #print(boxCharSep)
-
     plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -147,13 +145,14 @@ def main():
 
             stateCountyData = [i for i in endpointTxt if query.lower() in i.lower()]
             try:
-                run(lines=stateCountyData,
-                     state=state,
-                     county=county)
+                run(
+                    lines=stateCountyData,
+                    state=state,
+                    county=county
+                )
             except ZeroDivisionError:
                 pass
 
-
-        print(f'us-counties.csv date: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
+        print(f'\nUsing cache from: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
         print(f'CSV structure: {headStr}\n')
         print(f'Find your files here: {countiesDir}')
