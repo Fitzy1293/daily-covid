@@ -15,12 +15,12 @@ echo -e "${cyan}Enter a new poetry build version${white}"
 read poetryVersion
 sed -e "s/.*version =.*$/version = \"$poetryVersion\"/" pyproject.toml > temp.toml
 
-rm ./counties/*
+rm ./output-counties/*
 
 python3 test_pkg.py -sc "$boston" > /dev/null
 python3 test_pkg.py -sc "$ny" > /dev/null
 python3 test_pkg.py -sc "$la" > /dev/null
-mv ./counties/*.png ./examples
+mv ./output-counties/*.png ./examples
 echo -e "${green}Updated README.md figures${white}"
 
 git add examples

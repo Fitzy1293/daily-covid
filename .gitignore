@@ -5,3 +5,5 @@ __pycache__/
 dailycovid/__pycache__/
 us-counties.csv
 dailycovid/__init__.pyc
+output-counties/
+info-by-state/

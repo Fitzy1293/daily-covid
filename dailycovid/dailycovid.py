@@ -5,30 +5,18 @@ import os
 import sys
 import argparse
 from .covid_plot import *
+from .american_states import *
 import requests
+import csv
 
 endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
-states = {
-    "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
-    "CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia",
-    "HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas",
-    "KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
-    "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana",
-    "NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico",
-    "NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma",
-    "OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota",
-    "TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington",
-    "WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"
-}
-
 parser = argparse.ArgumentParser(description='Create plots for up to date COVID-19 daily changes.', formatter_class=argparse.RawTextHelpFormatter)
 
-parser.add_argument('--getdata', '-g', action='store_true', help=f'Download data from New York Times COVID endpoint.\n{endpoint}\n ')
+parser.add_argument('--get-data', '-g', dest='getData', action='store_true', help=f'Download data from New York Times COVID endpoint.\n{endpoint}\n ')
 parser.add_argument('--state', '-s', default=False)
 parser.add_argument('--county', '-c', default=False, help='\n')
 parser.add_argument('-sc', dest='stateCounty', default=False, help='Use state and county syperated by a dash.\ndailycovid -sc \'state-county\'')
-parser.add_argument('-csv', dest='stateCounty', default=False, help='Use state and county syperated by a dash.\ndailycovid -sc \'state-county\'')
 
 args = parser.parse_args()
 
@@ -37,8 +25,9 @@ if len(sys.argv) == 1: # Print help if using CL tool and there are no args.
     sys.exit()
 
 boxCharSep = '─' * 100
-cwd = os.getcwd()
-countiesDir = os.path.join(cwd, 'counties', '')
+stateInfoDir = 'info-by-state'
+outputDir = 'output-counties'
+
 head = ['Date', 'Cases-Total: Δ=Daily-Change', 'Deaths-Total: Δ=Daily-Change']
 headStr = ','.join(head)
 
@@ -55,8 +44,8 @@ def createNewRow(row, previous):
 
 def shortenTable(rows):
     previous = rows[0]
-    fixedFirstDay = [previous[0], f'{previous[-2]}: Δ={previous[-2]}', f'{previous[-1]} Δ={previous[-1]}']
-    returnRows = [fixedFirstDay]
+    fixedfirstDate = [previous[0], f'{previous[-2]}: Δ={previous[-2]}', f'{previous[-1]} Δ={previous[-1]}']
+    returnRows = [fixedfirstDate]
 
     for row in rows[1:]:
         newRow = createNewRow(row, previous)
@@ -67,52 +56,110 @@ def shortenTable(rows):
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def csvCreate(rows, fname):
+    newCsvStr = '\n'.join([','.join(i) for i in rows])
     with open(fname, 'w+', encoding='utf-8') as f:
-        for i in rows:
-            f.write(f'{",".join(i)}\n')
-
+        f.write(newCsvStr)
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def nytimesUpdate(endpoint=''):
+    if not os.path.exists(outputDir):
+        os.mkdir(outputDir)
+    if not os.path.exists(stateInfoDir):
+        os.mkdir(stateInfoDir)
+
     print(f'Downloading NY times COVID-19 CSV - {endpoint}')
-    r = requests.get(endpoint)
-    print('http status:', r.status_code)
-    endpointTxt = r.text # Writing to disk and keeping in memory
+    csvRaw = requests.get(endpoint)
+    print(f'http status: {csvRaw.status_code}\n\nCreating files for each state for quicker searching.')
+
+    normalizedLocation = csvRaw.text.upper().replace(' ', '-')
     with open('us-counties.csv', 'w+') as f:
-        f.write(r.text)
+        f.write(normalizedLocation)
+
+    newCsv = []
+    nytimesLines = normalizedLocation.splitlines()
+
+    abbrevs = stateFullNameKey()
+    stateCodes = abbrevs.values()
+
+    for line in nytimesLines[1:]:
+        cells = line.split(',')
+        state = cells[2]
+        county = cells[1]
+
+        parsableLocationStr = f'{abbrevs.get(state)},{cells[0]},{county},{cells[4]},{cells[5]}'
+
+        newCsv.append(parsableLocationStr)
+
+    allInfo = sorted(set(newCsv))
+
+    for stateCode in stateCodes:
+        outCSV = os.path.join('info-by-state', f'{stateCode}.csv')
+        print(f'\t{outCSV}')
+        with open(outCSV, 'w+') as f:
+            goodLines = '\n'.join([i[3:] for i in allInfo if i.startswith(stateCode)])
+            if stateCode == 'GU':
+                goodLines = goodLines.replace('UNKNOWN', 'GUAM')
+            f.write(goodLines)
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+def parseAmericanState(inputState=''):
+    testingStateString = inputState.upper()
+    if len(testingStateString) == 2:
+        if testingStateString in stateCodesSet():
+            return (testingStateString, stateCodeKey().get(testingStateString))
+        else:
+            sys.exit(f'{inputState} is not a valid two letter state code, stopping execution.')
+    else:
+        testingStateString = testingStateString.replace(' ', '-')
+        if testingStateString in statesFullNameSet():
+            return (stateFullNameKey().get(testingStateString), testingStateString.replace)
+        else:
+            sys.exit(f'{inputState} is not the name of a state, stopping execution.')
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def run(**kwargs):
-    if not os.path.exists(countiesDir):
-        os.mkdir(countiesDir)
+    countyLines = kwargs.get('lines')
+    dateRange = kwargs.get('dateRange')
 
-    stateReplaceSpace = kwargs['state'].replace(' ', '-')
-    countyReplaceSpace = kwargs['county'].replace(' ', '-')
-    csvFname = f'data_{countyReplaceSpace}_{stateReplaceSpace}.csv'
-    plotsFname = f'plots_{countyReplaceSpace}_{stateReplaceSpace}.png'
+    fileID = f'{kwargs["county"]}_{kwargs["stateCode"]}'
+    csvFname = f'data_{fileID}.csv'
+    plotsFname = f'plots_{fileID}.png'
 
-    csvPath = countiesDir + csvFname
-    plotsPath = countiesDir + plotsFname
+    outPaths = {
+        'csv': os.path.join(outputDir, csvFname),
+        'plots': os.path.join(outputDir, plotsFname),
+    }
 
-    rowsCols = [i.split(',') for i in kwargs['lines']]
+    rowsCols = [i.split(',') for i in countyLines]
+    reversedRows = reversed(shortenTable(rowsCols))
 
-    outputTable = [i for i in reversed(shortenTable(rowsCols))]
-    csvCreate([head] + outputTable, csvPath)
+    outputTable = [i for i in reversedRows]
+    csvCreate([head] + outputTable, outPaths['csv'])
 
     countyInfoPrintOut = (
-                f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n'
-                f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}\n{boxCharSep}'
+                '\n'
+                f'{len(rowsCols)} days\nDate range: {dateRange[0]} - {dateRange[1]}'
+                f'\n\ncsv: {outPaths.get("csv")}\nplots: {outPaths.get("plots")}'
+                f'\n{boxCharSep}'
     )
 
     print(countyInfoPrintOut)
 
-    plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
+    plotCovid(
+        rowsCols,
+        state=kwargs['state'],
+        stateCode=kwargs['stateCode'],
+        county=kwargs['county'],
+        plotsPath=outPaths['plots'],
+        dateRange=kwargs['dateRange']
 
+
+    )
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
-
 def main():
-    if args.getdata: # Used when actually updating, shell online is easier
+    if args.getData: # Used when actually updating, shell online is easier
         nytimesUpdate(endpoint=endpoint)
 
     dictArgs = vars(args)
@@ -122,37 +169,47 @@ def main():
         dictArgs['county'] = stateCountyList[1]
 
     if args.state or args.stateCounty:
-        if not os.path.exists('us-counties.csv'):
+        if not os.path.exists('us-counties.csv') or not os.path.exists(stateInfoDir):
             nytimesUpdate(endpoint=endpoint)
-        with open('us-counties.csv', 'r') as f:
-            endpointTxt = f.read().splitlines()
 
-        state = states[dictArgs['state'][:2].upper()].lower()
+        statePair = parseAmericanState(dictArgs['state'])
+        stateCode = statePair[0]
+        state = statePair[1]
 
-        if not args.county and not args.stateCounty:
-            counties = set([i.split(',')[1].lower() for i in endpointTxt if state.lower() == i.lower().split(',')[2]])
-            counties = sorted(counties - {'unknown'})
-            print(*counties, sep='\n')
+        with open(os.path.join(stateInfoDir, f'{stateCode}.csv'), 'r') as f:
+            csvLines = f.read().splitlines()
 
+
+        if not args.county and not args.stateCounty: # If oanly
+            counties = set([line.split(',')[1].upper() for line in csvLines])
+            counties = sorted(counties - {'UNKNOWN'})
+            printCounties = "\n\t".join(counties)
+            print(f'\n** Running for every county in "{stateCode}" **\n\t{printCounties}')
         else:
-            counties = [dictArgs['county'].lower()]
+            counties = [dictArgs['county'].upper().replace(' ', '-')]
 
         print(f'\n{boxCharSep}')
-        for county in counties:
-            print(f'{state} - {county}')
-            query = f',{county},{state},'
-            countyStateStr = f'{state},{county}'
 
-            stateCountyData = [i for i in endpointTxt if query.lower() in i.lower()]
+        for county in counties:
+            print(f'State: {stateCode} - County: {county}')
+            lenCounty = len(county)
+
+            stateCountyData = [i for i in csvLines if i[11:][:lenCounty] == county]
+            dateRange = (stateCountyData[0][:10], stateCountyData[-1][:10])
+
             try:
                 run(
                     lines=stateCountyData,
+                    stateCode=stateCode,
                     state=state,
-                    county=county
+                    county=county,
+                    dateRange=dateRange
                 )
             except ZeroDivisionError:
                 pass
 
-        print(f'\nUsing cache from: {endpointTxt[1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
+        print(f'Output files are located in the "{outputDir}" folder of the current working directory.')
+        print(f'\nUsing cache from: {csvLines[-1][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
         print(f'CSV structure: {headStr}\n')
-        print(f'Find your files here: {countiesDir}')
+
+    print(f'Arguments used: {args}\n')

@@ -6,7 +6,7 @@ from time import time
 
 
 size = 7
-dpi = 220
+dpi = 250
 markersize = 2
 linewidth = 1
 
@@ -20,7 +20,7 @@ def dateFormat(str=''):
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-def plotCovid(rows, state='', county='', plotsPath=''):
+def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateCode=''):
 
     casesDeaths = [(int(i[-2]), int(i[-1])) for i in rows]
     cases = np.array([i[0] for i in casesDeaths])
@@ -28,14 +28,9 @@ def plotCovid(rows, state='', county='', plotsPath=''):
     numOfDays = len(rows)
     ar = np.arange(0, numOfDays)
 
-    startRow = rows[0]
-    endRow = rows[-1]
-    startDate = dateFormat(startRow[0])
-    endDate = dateFormat(endRow[0])
+    dateRangeStr = f'{dateFormat(dateRange[0])} - {dateFormat(dateRange[1])}'
+    togetherTitle = f'COVID-19 Tracking\n{county}, {stateCode}'
 
-    togetherTitle = f'COVID-19 Tracking\n{county.title()}, {state.title()}\n{startDate} - {endDate}'
-
-    #fatalityRates = [100 * (deaths[i]) / cases[i] for i in range(numOfDays)]
     fatalityRates = np.divide(deaths, cases) * 100
 
     gs = gridspec.GridSpec(3, 2)  # Create 3x2 sub plots
@@ -50,9 +45,9 @@ def plotCovid(rows, state='', county='', plotsPath=''):
                         'r.-',
                         markersize=markersize)
 
-    casesSubplot.set(xlabel=f'Days since {startDate}',
-                        ylabel='Cases',
-                        title='$f(x) = cases(day)$')
+    casesSubplot.set(xlabel=dateRangeStr,
+                        ylabel='Cumulative Cases',
+                        title='$y = cases(day)$')
 
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -63,9 +58,11 @@ def plotCovid(rows, state='', county='', plotsPath=''):
                         markersize=markersize,
                         linewidth=linewidth)
 
-    deathsSubplot.set(xlabel=f'Days since {startDate}',
-                        ylabel='Total deaths',
-                        title='$f(x) = deaths(day)$')
+    deathsSubplot.set(xlabel=dateRangeStr,
+                        ylabel='Cumulative Deaths',
+                        title='$y = deaths(day)$')
+
+# -----------------------------------------------------------------------------------------------------------------------
 
     axfatality = fig.add_subplot(gs[1, 1])
 
@@ -98,16 +95,15 @@ def plotCovid(rows, state='', county='', plotsPath=''):
     casesDeathsSubplot.set_title('Combined title',
                                     style='italic')
 
-    casesDeathsSubplot.set(xlabel=f'Days since {startDate}',
+    casesDeathsSubplot.set(xlabel=dateRangeStr,
                             ylabel='COVID-19 cases and deaths',
                             title=togetherTitle)
-
-# -----------------------------------------------------------------------------------------------------------------------\
-
 
 
 # -----------------------------------------------------------------------------------------------------------------------
 
+
+# -----------------------------------------------------------------------------------------------------------------------
     fig.set_size_inches(size, size)
     plt.subplots_adjust(hspace=.5, wspace=.75)
     plt.savefig(plotsPath, dpi=dpi)
