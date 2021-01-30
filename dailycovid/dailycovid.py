@@ -34,29 +34,26 @@ if len(sys.argv) == 1:
     parser.print_help()
     sys.exit()
 
-endpoint = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
-boxCarSep = '─' * 100
+boxCharSep = '─' * 100
 cwd = os.getcwd()
 countiesDir = os.path.join(cwd, 'counties', '')
-head = ['Date', 'Cases-Total: delta=Daily-Change', 'Deaths-Total: delta=Daily-Change']
+head = ['Date', 'Cases-Total: Δ=Daily-Change', 'Deaths-Total: Δ=Daily-Change']
 headStr = ','.join(head)
 
 print() #space
 
-
-
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def createNewRow(row, previous):
-    cases = f'{row[-2]}: delta={int(row[-2]) - int(previous[-2])}'
-    deaths = f'{row[-1]}: delta={int(row[-1]) - int(previous[-1])}'
+    cases = f'{row[-2]}: Δ={int(row[-2]) - int(previous[-2])}'
+    deaths = f'{row[-1]}: Δ={int(row[-1]) - int(previous[-1])}'
     return ([row[0], cases, deaths], row)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def shortenTable(rows):
     previous = rows[0]
-    fixedFirstDay = [previous[0], f'{previous[-2]}: delta={previous[-2]}', f'{previous[-1]} delta={previous[-1]}']
+    fixedFirstDay = [previous[0], f'{previous[-2]}: Δ={previous[-2]}', f'{previous[-1]} Δ={previous[-1]}']
     returnRows = [fixedFirstDay]
 
     for row in rows[1:]:
@@ -101,9 +98,16 @@ def run(**kwargs):
     outputTable = [i for i in reversed(shortenTable(rowsCols))]
     csvCreate([head] + outputTable, csvPath)
 
-    print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
-    print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
-    print(boxCarSep)
+    countyInfoPrintOut = (
+                f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n'
+                f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}\n{boxCharSep}'
+    )
+
+    print(countyInfoPrintOut)
+
+    #print(f'\ncsv: {csvFname}\ntplot: {plotsFname}\ndays: {len(rowsCols)}\n')
+    #print(f'Range\n{" ".join(rowsCols[-1])}\n{" ".join(rowsCols[0])}')
+    #print(boxCharSep)
 
     plotCovid(rowsCols, state=kwargs['state'], county=kwargs['county'], plotsPath=plotsPath)
 
@@ -135,7 +139,7 @@ def main():
         else:
             counties = [dictArgs['county'].lower()]
 
-        print(f'\n{boxCarSep}')
+        print(f'\n{boxCharSep}')
         for county in counties:
             print(f'{state} - {county}')
             query = f',{county},{state},'

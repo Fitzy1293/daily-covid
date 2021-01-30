@@ -52,7 +52,7 @@ def plotCovid(rows, state='', county='', plotsPath=''):
 
     casesSubplot.set(xlabel=f'Days since {startDate}',
                         ylabel='Cases',
-                        title='$f(x) = cases(days)$')
+                        title='$f(x) = cases(day)$')
 
 # -----------------------------------------------------------------------------------------------------------------------
 

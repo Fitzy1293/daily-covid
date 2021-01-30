@@ -4,3 +4,4 @@ dist/
 __pycache__/
 dailycovid/__pycache__/
 us-counties.csv
+dailycovid/__init__.pyc
