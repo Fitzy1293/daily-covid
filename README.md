@@ -24,8 +24,12 @@ Three ways to do the same thing.
 
 On the first run it will download a csv file containing the most recent data.
 
-
 Use `dailycovid -g` to update the cache.
+
+
+# Initial run
+
+![gif](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/ex.gif)
 
 
 # Examples of plots
