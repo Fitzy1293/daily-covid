@@ -7,3 +7,5 @@ us-counties.csv
 dailycovid/__init__.pyc
 output-counties/
 info-by-state/
+*.mp4
+*.mkv
