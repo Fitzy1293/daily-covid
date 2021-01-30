@@ -1,10 +1,14 @@
 [tool.poetry]
 name = "dailycovid"
-version = "1.1.2"
+version = "1.1.5"
 description = "U.S.A daily covid information."
 authors = ["fitzy1293 <berkshiremind@gmail.com>"]
 license = "MIT"
-readme = "README.md"
+readme = "README-pip.md"
+
+homepage = "https://github.com/Fitzy1293/daily-covid"
+repository = "https://github.com/Fitzy1293/daily-covid"
+keywords = ["COVID", "Coronavirus"]
 
 
 include = [

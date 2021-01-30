@@ -62,11 +62,6 @@ def csvCreate(rows, fname):
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 def nytimesUpdate(endpoint=''):
-    if not os.path.exists(outputDir):
-        os.mkdir(outputDir)
-    if not os.path.exists(stateInfoDir):
-        os.mkdir(stateInfoDir)
-
     print(f'Downloading NY times COVID-19 CSV - {endpoint}')
     csvRaw = requests.get(endpoint)
     print(f'http status: {csvRaw.status_code}\n\nCreating files for each state for quicker searching.')
@@ -159,6 +154,11 @@ def run(**kwargs):
     )
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 def main():
+    if not os.path.exists(outputDir):
+        os.mkdir(outputDir)
+    if not os.path.exists(stateInfoDir):
+        os.mkdir(stateInfoDir)
+        
     if args.getData: # Used when actually updating, shell online is easier
         nytimesUpdate(endpoint=endpoint)
 
@@ -182,7 +182,7 @@ def main():
 
         if not args.county and not args.stateCounty: # If oanly
             counties = set([line.split(',')[1].upper() for line in csvLines])
-            counties = sorted(counties - {'UNKNOWN'})
+            counties = sorted(counties - {'UNKOWN'})
             printCounties = "\n\t".join(counties)
             print(f'\n** Running for every county in "{stateCode}" **\n\t{printCounties}')
         else:

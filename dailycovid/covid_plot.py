@@ -31,6 +31,8 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
     dateRangeStr = f'{dateFormat(dateRange[0])} - {dateFormat(dateRange[1])}'
     togetherTitle = f'COVID-19 Tracking\n{county}, {stateCode}'
 
+
+
     fatalityRates = np.divide(deaths, cases) * 100
 
     gs = gridspec.GridSpec(3, 2)  # Create 3x2 sub plots
@@ -85,12 +87,12 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
     plt.fill_between(ar, deaths, cases,
                         facecolor="orange",  # The fill color
                         color='r',       # The outline color
-                        alpha=.3)
+                        alpha=.2)
 
     plt.fill_between(np.arange(0, numOfDays), deaths,
                         facecolor="green",  # The fill color
                         color='m',       # The outline color
-                        alpha=.3)
+                        alpha=.2)
 
     casesDeathsSubplot.set_title('Combined title',
                                     style='italic')

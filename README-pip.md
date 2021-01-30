@@ -31,7 +31,6 @@ Use `dailycovid -g` to update the cache.
 
 [Full resolution video.](https://streamable.com/j3occ7)
 
-![gif](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/ex.gif)
 
 
 # Examples of plots
