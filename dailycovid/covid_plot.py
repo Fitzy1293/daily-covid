@@ -5,7 +5,7 @@ import numpy as np
 from time import time
 
 
-size = 7
+size = 8
 dpi = 250
 markersize = 2
 linewidth = 1
