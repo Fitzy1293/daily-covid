@@ -12,7 +12,14 @@
 
 ## Specific Counties in a State
 
-Three ways to do the same thing.
+You can now use an arbitrary number of arguments with `-s` or `-sc`.
+
+`dailycovid -sc ny-albany ca-orange "California-Los Angeles"`
+
+`dailycovid -s DELAWARE MA`
+
+
+Here are three ways to do the same thing.
 
 `dailycovid -sc "California-Los Angeles"`
 
