@@ -147,13 +147,15 @@ def run(**kwargs):
 
     print(countyInfoPrintOut)
 
+    sevenDays = '\n'.join(['    '.join(i[1:]) for i in outputTable[:7]])
     plotCovid(
         rowsCols,
         state=kwargs['state'],
         stateCode=kwargs['stateCode'],
         county=kwargs['county'],
         plotsPath=outPaths['plots'],
-        dateRange=kwargs['dateRange']
+        dateRange=kwargs['dateRange'],
+        previousWeek=f'Previous 7 days (Cases, Deaths)\n{outputTable[6][0]} - {kwargs.get("dateRange")[1]}\n\n{sevenDays}'
     )
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 def main():

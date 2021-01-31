@@ -20,8 +20,7 @@ def dateFormat(str=''):
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateCode=''):
-
+def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateCode='', previousWeek=''):
     casesDeaths = [(int(i[-2]), int(i[-1])) for i in rows]
     cases = np.array([i[0] for i in casesDeaths])
     deaths = np.array([i[1] for i in casesDeaths])
@@ -30,8 +29,6 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
 
     dateRangeStr = f'{dateFormat(dateRange[0])} - {dateFormat(dateRange[1])}'
     togetherTitle = f'COVID-19 Tracking\n{county}, {stateCode}'
-
-
 
     fatalityRates = np.divide(deaths, cases) * 100
 
@@ -98,8 +95,18 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
                                     style='italic')
 
     casesDeathsSubplot.set(xlabel=dateRangeStr,
-                            ylabel='COVID-19 cases and deaths',
+                            ylabel='COVID-19 Cases and Deaths',
                             title=togetherTitle)
+    casesDeathsSubplot.legend((f'Cases={format(cases[-1], ",d")}', f'Deaths={format(deaths[-1], ",d")}'))
+
+    casesDeathsSubplot.text(.1, 0.9,
+                        previousWeek,
+                        verticalalignment='top',
+                        horizontalalignment='left',
+                        transform=casesDeathsSubplot.transAxes,
+                        color='black',
+                        fontsize=6,
+                        style='italic')
 
 
 # -----------------------------------------------------------------------------------------------------------------------
