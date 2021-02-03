@@ -156,8 +156,8 @@ def run(**kwargs):
     printOut = ''
     if args.plot:
         printOut = f'\nplots: {outPaths["plots"]}'
-        sevenDays = newCsv[:7]
-        sevenDaysData = '\n'.join(sevenDays).replace(',', ' ')
+        sevenDays = [i.split(',') for i in newCsv[:7]]
+        sevenDaysData = '\n'.join([' '.join(i[1:]) for i in sevenDays])
         data = [(i.split(',')[1].split(':')[0], i.split(',')[2].split(':')[0]) for i in newCsv]
         plotCovid(
             data,
@@ -166,7 +166,7 @@ def run(**kwargs):
             county=county,
             plotsPath=outPaths['plots'],
             dateRange=dateRange,
-            previousWeek=f'Previous 7 days (Cases, Deaths)\n{dateRange[1]} - {sevenDays[6][:10]}\n\n{sevenDaysData}'
+            previousWeek=f'Previous 7 days (Cases, Deaths)\n{dateRange[1]} - {sevenDays[6][0]}\n\n{sevenDaysData}'
     )
 
     countyInfoPrintOut = (

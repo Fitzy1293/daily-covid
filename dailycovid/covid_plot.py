@@ -61,7 +61,7 @@ def plotCovid(data, state='', county='', plotsPath='', dateRange=('',''), stateC
     deathsSubplot = fig.add_subplot(gs[2, 1])  # row 0, col 1
     deathsSubplot.set_title('title')
     deathsSubplot.plot(deaths,
-                        'm.-',
+                        'm.',
                         markersize=markersize,
                         linewidth=linewidth)
 
@@ -86,8 +86,8 @@ def plotCovid(data, state='', county='', plotsPath='', dateRange=('',''), stateC
 # -----------------------------------------------------------------------------------------------------------------------
 
     casesDeathsSubplot = fig.add_subplot(gs[:, 0])  # col 1, span all rows:
-    casesDeathsSubplot.plot(ar, cases, 'r', linewidth=linewidth)
-    casesDeathsSubplot.plot(ar, deaths, 'm', linewidth=linewidth)
+    casesDeathsSubplot.plot(cases, 'r', linewidth=linewidth)
+    casesDeathsSubplot.plot(deaths, 'm', linewidth=linewidth)
 
     plt.fill_between(ar, deaths, cases,
                         facecolor="orange",  # The fill color
@@ -122,6 +122,6 @@ def plotCovid(data, state='', county='', plotsPath='', dateRange=('',''), stateC
 
 # -----------------------------------------------------------------------------------------------------------------------
     fig.set_size_inches(size, size)
-    plt.subplots_adjust(hspace=.5, wspace=.75)
+    plt.subplots_adjust(hspace=.50, wspace=.75)
     plt.savefig(plotsPath, dpi=dpi)
     plt.close()  # Don't forget or it memory leaks.
