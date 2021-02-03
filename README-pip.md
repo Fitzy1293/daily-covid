@@ -10,7 +10,7 @@
 
 `dailycovid -s statecode`
 
-## Specific Counties in a State
+## Specific Counties in a State or Whole States
 
 You can now use an arbitrary number of arguments with `-s` or `-sc`.
 
@@ -26,6 +26,10 @@ Here are three ways to do the same thing.
 `dailycovid -s CA -c "Los Angeles"`
 
 `dailycovid --state CA --county "Los Angeles"`
+
+## Making Plots
+
+Use `--plot` or `-p` to make the plots.
 
 ## Updating Data
 

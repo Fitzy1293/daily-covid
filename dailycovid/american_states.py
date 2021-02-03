@@ -8,6 +8,7 @@ def stateCodeKey():
     	"CA":"CALIFORNIA",
         "CO":"COLORADO",
     	"CT":"CONNECTICUT",
+        "DC":"DC",
     	"DE":"DELAWARE",
     	"FL":"FLORIDA",
     	"GA":"GEORGIA",

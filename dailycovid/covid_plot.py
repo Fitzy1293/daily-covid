@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
-#from pprint import pprint
+from pprint import pprint
 from time import time
-
+import pandas as pd
 
 size = 8
 dpi = 250
@@ -20,17 +20,25 @@ def dateFormat(str=''):
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateCode='', previousWeek=''):
-    casesDeaths = [(int(i[-2]), int(i[-1])) for i in rows]
-    cases = np.array([i[0] for i in casesDeaths])
-    deaths = np.array([i[1] for i in casesDeaths])
+def plotCovid(data, state='', county='', plotsPath='', dateRange=('',''), stateCode='', previousWeek=''):
+    rows = [i for i in reversed(data)]
+
     numOfDays = len(rows)
+
+    casesInt = []
+    deathsInt = []
+    for i in rows:
+        casesInt.append(int(i[-2]))
+        deathsInt.append(int(i[-1]))
+
+
+    cases = np.array(casesInt)
+    deaths = np.array(deathsInt)
+    fatalityRates = np.divide(deaths, cases) * 100
     ar = np.arange(0, numOfDays)
 
     dateRangeStr = f'{dateFormat(dateRange[0])} - {dateFormat(dateRange[1])}'
     togetherTitle = f'COVID-19 Tracking\n{county}, {stateCode}'
-
-    fatalityRates = np.divide(deaths, cases) * 100
 
     gs = gridspec.GridSpec(3, 2)  # Create 3x2 sub plots
     fig = plt.figure()
@@ -40,8 +48,8 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
     casesSubplot = fig.add_subplot(gs[0, 1])  # row 0, col 0
     casesSubplot.set_title('title')
 
-    casesSubplot.plot(ar, cases,
-                        'r.-',
+    casesSubplot.plot(cases,
+                        'r.',
                         markersize=markersize)
 
     casesSubplot.set(xlabel=dateRangeStr,
@@ -52,7 +60,7 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
 
     deathsSubplot = fig.add_subplot(gs[2, 1])  # row 0, col 1
     deathsSubplot.set_title('title')
-    deathsSubplot.plot(ar, deaths,
+    deathsSubplot.plot(deaths,
                         'm.-',
                         markersize=markersize,
                         linewidth=linewidth)
@@ -65,9 +73,9 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
 
     axfatality = fig.add_subplot(gs[1, 1])
 
-    axfatality.plot(ar, fatalityRates,'g.-', linewidth=linewidth, markersize=markersize)
+    axfatality.plot(fatalityRates,'g.', linewidth=linewidth, markersize=markersize)
     axfatality.text(.98, 0.05,
-                        f'Fatality rate\nCurrent: {round(fatalityRates[-1], 1)} %',
+                        f'Fatality rate\nCurrent: {round(fatalityRates[-1], 1)}%',
                         verticalalignment='bottom',
                         horizontalalignment='right',
                         transform=axfatality.transAxes,
@@ -86,7 +94,7 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
                         color='r',       # The outline color
                         alpha=.2)
 
-    plt.fill_between(np.arange(0, numOfDays), deaths,
+    plt.fill_between(ar, deaths,
                         facecolor="green",  # The fill color
                         color='m',       # The outline color
                         alpha=.2)
@@ -97,9 +105,9 @@ def plotCovid(rows, state='', county='', plotsPath='', dateRange=('',''), stateC
     casesDeathsSubplot.set(xlabel=dateRangeStr,
                             ylabel='COVID-19 Cases and Deaths',
                             title=togetherTitle)
-    casesDeathsSubplot.legend((f'Cases={format(cases[-1], ",d")}', f'Deaths={format(deaths[-1], ",d")}'))
+    casesDeathsSubplot.legend((f'Cases={format(cases[numOfDays-1], ",d")}', f'Deaths={format(deaths[numOfDays-1], ",d")}'))
 
-    casesDeathsSubplot.text(.1, 0.9,
+    casesDeathsSubplot.text(.05, 0.9,
                         previousWeek,
                         verticalalignment='top',
                         horizontalalignment='left',

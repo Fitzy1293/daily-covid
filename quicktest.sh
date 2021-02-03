@@ -12,5 +12,7 @@ done
 
 time (python3 test_pkg.py -sc MA-Berkshire)
 echo
-head ./output-counties/data_BERKSHIRE_MA.csv | grep '20'
-#xdg-open ./counties/plots_BERKSHIRE_MA.png
+head ${outputDir}/data_BERKSHIRE_MA.csv | grep '20'
+echo
+
+tail ${outputDir}/data_BERKSHIRE_MA.csv | grep '20'
