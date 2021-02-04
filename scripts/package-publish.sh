@@ -1,8 +1,12 @@
 #!/bin/env bash
 repo="https://github.com/Fitzy1293/daily-covid"
 
+ls ..
+pwd
+exit 1
+
 rm publish.log && touch publish.log
-grep -v ex.gif README.md > README-pip.md
+grep -v ex.gif ../README.md > ../README-pip.md
 
 green='\e[0;32m'
 cyan='\e[0;36m'
@@ -24,8 +28,12 @@ echo -e "${cyan}Enter a new version for pyproject.toml for building with poetry$
 read poetryVersion
 
 cp pyproject.toml backup_config.toml
-sed "s/.*version =.*$/version = \"$poetryVersion\"/" pyproject.toml > new.toml
+sed "s/.*version
+* =.*$/version = \"${poetryVersion}\"/" pyproject.toml > new.toml
 cp new.toml pyproject.toml
+
+poetry build
+poetry publish
 
 # Update github repo with new figures
 rm ./output-counties/*

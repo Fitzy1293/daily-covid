@@ -1,6 +1,6 @@
 #!/bin/env bash
 clear
-outputDir="output-counties/"
+outputDir="output-counties"
 
 for i in "$@" ; do
     if [[ $i == "fresh" || $i == "f" ]] ; then
@@ -9,8 +9,7 @@ for i in "$@" ; do
     fi
 done
 
-
-time (python3 test_pkg.py -sc MA-Berkshire)
+time (python3 ./scripts/test_pkg.py -sc MA-Berkshire)
 echo
 head ${outputDir}/data_BERKSHIRE_MA.csv | grep '20'
 echo
