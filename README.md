@@ -8,7 +8,7 @@
 
 ## Simplest
 
-`dailycovid -s statecode`
+`dailycovid --plot -s statecode`
 
 ## Specific Counties in a State or Whole States
 
