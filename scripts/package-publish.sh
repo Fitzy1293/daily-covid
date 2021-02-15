@@ -7,7 +7,7 @@ boston="ma-suffolk"
 ./poetry-version-verify.sh
 
 # Update github repo with new figures
-rm ./output-counties/*
+rm output-counties/*
 echo -e "\n${purple}\nUpdating README.md figures...${white}"
 python3 test_pkg.py --plot -sc "$boston" "$ny" "$la" >> publish.log
 mv output-counties/*.png examples
