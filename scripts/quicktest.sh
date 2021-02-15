@@ -10,8 +10,6 @@ for i in "$@" ; do
 done
 
 time (python3 ./scripts/test_pkg.py -sc MA-Berkshire)
-echo
 head ${outputDir}/data_BERKSHIRE_MA.csv | grep '20'
 echo
-
 tail ${outputDir}/data_BERKSHIRE_MA.csv | grep '20'
