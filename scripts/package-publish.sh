@@ -4,7 +4,7 @@ la=$"ca-los angeles"
 ny="ny-new york city"
 boston="ma-suffolk"
 
-./poetry-version-verify.sh
+./scripts/poetry-version-verify.sh
 
 # Update github repo with new figures
 rm output-counties/*
