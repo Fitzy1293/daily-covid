@@ -38,13 +38,6 @@ On the first run it will download a csv file containing the most recent data.
 Use `dailycovid -g` to update the cache.
 
 
-# Initial Execution Video
-
-[Full resolution video.](https://streamable.com/j3occ7)
-
-![gif](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/ex.gif)
-
-
 # Examples of plots
 
 '![image](https://raw.githubusercontent.com/Fitzy1293/daily-covid/master/examples/plots_LOS-ANGELES_CA.png)'
