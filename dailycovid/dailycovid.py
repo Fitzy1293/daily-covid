@@ -239,6 +239,6 @@ def main():
                 except ZeroDivisionError:
                     pass
 
-        print(f'Output files are located in the "{outputDir}" folder of the current working directory.')
+        print(f'output dir: {outputDir}.')
         print(f'\nUsing cache from: {csvLines[0][:10]}\nUse -g as an argument if you need to update the us-counties.csv cache.\n')
         print(f'CSV structure: {headStr}\n')
